@@ -23,7 +23,7 @@ Below, you'll find a series of tasks that guide you through importing, cleaning,
 
 These tasks should be completed in the `week_01_assignment.Rmd` file found in the `rmd` subfolder. We encourage you to have both the instructions document and the assignment document open.
 
-You can view an example of the report you should have created by the end of today's workshop [here]().
+You can view an example of the report you should have created by the end of today's workshop [here](https://the-graph-courses.github.io/rmc_q4_2024_materials/rmc_week_01_workshop/rmd/example_report.html).
 
 ## TASK 1: LOAD THE REQUIRED PACKAGES
 
