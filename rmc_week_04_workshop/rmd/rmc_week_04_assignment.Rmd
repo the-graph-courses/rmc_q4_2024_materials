@@ -1,0 +1,213 @@
+---
+title: "Workshop 4 | Household survey datasets from Cameroon"
+subtitle: "Joining datasets practice"
+author: "YOUR NAME HERE" # Remember to add your name!
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    toc: true
+date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: inline
+  markdown: 
+    wrap: none
+---
+
+# Introduction
+
+Welcome to the first week of data manipulation! Please refer to the notes from the prework here:
+
+-   [Joining 1](https://the-graph-courses.github.io/fdar/FDAR_EN_joining_1/FDAR_EN_joining_1.html)
+-   [Joining 2](https://the-graph-courses.github.io/fdar/FDAR_EN_joining_2/FDAR_EN_joining_2.html)
+
+# Today's dataset: Household survey data from Cameroon
+
+These data come from a survey conducted in Yaoundé, Cameroon, in 2022. The purpose of this study was to assess the frequency of diarrhea in children residing in a neighborhood of Yaoundé, as well as the factors associated with the occurrence of this diarrhea. Households were selected from different neighborhoods of the study area. In each selected household, all children present at the time of the survey were included in the study. The study was conducted in three phases:
+
+-   **Phase 1**: Sampling of households and collection of data on the characteristics of the households and the head of the household (see variables below)
+
+-   **Phase 2**: Visit on Day 7 to assess the frequency of diarrhea in all children present at the time of the visit
+
+-   **Phase 3**: Visit on Day 21 to assess the frequency of diarrhea in all children present at the time of the visit.
+
+Thus, three datasets were produced. Refer to the meta data file "yaounde_data_description.pdf" in the data folder for variable definitions as you complete the exercise.
+
+# Load packages
+
+```{r}
+pacman::p_load(tidyverse, here, janitor)
+```
+
+# Import data for each phase
+
+## Phase 1: Household characteristics
+
+Read in the file "household_data.csv" from the data folder.
+
+```{r}
+# Import CSV
+household_data <- "WRITE_YOUR_CODE_HERE"
+```
+
+*CHECKPOINT: The imported data frame should have 154 rows and 10 columns.*
+
+```{r}
+# Look at the characteristics of each column
+glimpse(household_data)
+```
+
+```{r}
+# Show the first 6 rows
+head(household_data)
+```
+
+Takeaway: 154 unique households, some demographic information about the household, and the name of the surveyor assigned to visit that household.
+
+The surveyor goes to the same house 7 days after the initial visit, then 21 days after, to collect individual level data for each child present.
+
+## Phase 2: Visit on Day 7
+
+Read in the file "child_data_day_07.csv" from the data sub-folder.
+
+```{r}
+# Import CSV
+child_data_day_07 <- "WRITE_YOUR_CODE_HERE"
+```
+
+*CHECKPOINT: The imported data frame should have 218 rows and 9 columns.*
+
+```{r}
+# Look at the characteristics of each column
+glimpse(child_data_day_07)
+```
+
+```{r}
+# Show the first 6 rows
+head(child_data_day_07)
+```
+
+## Phase 3: Visit on Day 21
+
+Read in the file "child_data_day_21.csv" from the data folder.
+
+```{r}
+# Import CSV
+child_data_day_21 <- "WRITE_YOUR_CODE_HERE"
+```
+
+*CHECKPOINT: The imported data frame should have 217 rows and 9 columns.*
+
+```{r}
+# Look at the characteristics of each column
+glimpse(child_data_day_21)
+```
+
+```{r}
+# Show the first 6 rows
+head(child_data_day_21)
+```
+
+# Data Analysis
+
+## Question 1: Adding household-level characteristics to individual data
+
+### Question 1A:
+
+The `child_data_day_07` data frame records individual-level clinical data for each child surveyed. Let's say we want to see the household characteristics for each child. We can match each child to their corresponding household by joining `child_data_day_07` with `household_data`. Identify the correct joining function to add household variable from `household_data` to the `child_data_day_07`.
+
+*HINT: Think carefully about the name of the variable you want to join by. The variable might not have the same name in both datasets.*
+
+```{r}
+merged_d07 <- "WRITE_YOUR_CODE_HERE"
+```
+
+*CHECKPOINT: The joined data frame should have 218 rows and 18 columns.*
+
+### Question 1B:
+
+Repeat the steps from Question 1A, but this time join `child_data_day_21` with `household_data`.
+
+```{r}
+merged_d21 <- "WRITE_YOUR_CODE_HERE"
+```
+
+*CHECKPOINT: The joined data frame should have 217 rows and 18 columns.*
+
+Look through the records in these two datasets. You may notice that some children have all NAs for household variables, such as `type_residency`. This indicates that these children were unhoused, and surveyed on the street. We will investigate this further in later questions.
+
+## Question 2: Identify missing records
+
+### Question 2A:
+
+Using the `merged_d07` and `merged_d21` datasets you created above, identify children who were surveyed in Phase 2 (Day 7) but not in Phase 3 (Day 21).
+
+```{r}
+# day 7 but not 21
+only_d07 <- "WRITE_YOUR_CODE_HERE"
+```
+
+*CHECKPOINT: The resulting data frame should have 15 rows and 18 columns.*
+
+### Question 2B:
+
+Similarly, do the opposite comparison to identify children who were surveyed on Day 21 but were not originally surveyed on Day 21.
+
+```{r}
+# day 21 but not 7
+
+only_d21 <- "WRITE_YOUR_CODE_HERE"
+```
+
+*CHECKPOINT: The resulting data frame should have 14 rows and 18 columns.*
+
+## Question 3: Comparing residence type and houselessness on Day 7 vs Day 21
+
+### Question 3A:
+
+Create a bar plot of residence type for children in `only_d07`. You should have 3 bars: suburban, urban, and NA. The NA records correspond to houseless children.
+
+*HINT: Use `geom_bar()` from {ggplot2}.*
+
+```{r}
+"WRITE_YOUR_CODE_HERE"
+```
+
+### Question 3B:
+
+Create the same bar plot of residence type for children in `only_d21`.
+
+```{r}
+"WRITE_YOUR_CODE_HERE"
+```
+
+You plots above should demonstrate that more houseless children were found during the last phase (Day 21) compared to Day 7.
+
+## Question 4
+
+### Question 4A:
+
+Identify and use the correct joining function to give a dataset with records of children who were surveyed on BOTH days.
+
+```{r}
+both_days <- "WRITE_YOUR_CODE_HERE"
+```
+
+*CHECKPOINT: The resulting data frame should have 203 rows and 34 columns.*
+
+### Question 4B:
+
+Compare a health variable such as `deworming` for day 7 vs day 21. Present a summary table showing this information.
+
+```{r}
+"WRITE_YOUR_CODE_HERE"
+```
+
+# CHALLENGE (Optional)
+
+We want to calculate the per diem payment owed to each surveyor as follows: 1 surveyed household = 500 CFA Francs 1 child seen on Day 7 = 200 CFA Francs 1 child seen on Day 21 = 200 CFA Francs
+
+**Calculate the total income of each investigator.**
+
+```{r}
+"WRITE_YOUR_CODE_HERE"
+```

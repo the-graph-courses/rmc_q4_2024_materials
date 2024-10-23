@@ -1,0 +1,155 @@
+zone_num,household_code,survey_date,household_size,type_residency,name_water_point,sex_head_household,religion_head_household,marital_status_head_household,name_surveyor
+32,13103,21072021,4,suburban,Supermont,female,Catholic,common-law,DONG
+32,13201,25072021,6,suburban,Supermont,female,Catholic,common-law,NSAN
+32,13202,25072021,3,suburban,Supermont,female,Catholic,common-law,DONG
+32,13203,25072021,4,suburban,Supermont,female,Catholic,common-law,DONG
+32,13204,25072021,6,suburban,Supermont,female,Catholic,married,DONG
+32,13205,25072021,6,suburban,Supermont,female,Muslim,married,DONG
+32,13206,25072021,4,suburban,Supermont,female,Other,common-law,DONG
+32,13207,25072021,5,suburban,Supermont,female,Catholic,common-law,DONG
+32,13208,28072021,4,suburban,Supermont,female,Protestant,common-law,DONG
+32,13209,25072021,4,suburban,Supermont,female,Catholic,common-law,DONG
+32,13210,25072021,5,suburban,Minsole 1,male,Catholic,common-law,DONG
+32,13211,25072021,5,suburban,Supermont,male,Other,married,DONG
+32,13212,25072021,6,suburban,Supermont,female,Catholic,common-law,DONG
+32,13213,25072021,5,suburban,Supermont,female,Catholic,single,DONG
+32,13214,25072021,12,suburban,Supermont,male,Catholic,married,DONG
+32,13215,25072021,4,suburban,Minsole 1,male,Traditionnel,common-law,DONG
+34,13401,29072021,4,suburban,Behind Carousel,male,Traditionnel,common-law,NSAN
+34,13402,29072021,5,suburban,Behind Carousel,female,Catholic,common-law,NSAN
+34,13403,23072021,14,suburban,Behind Carousel,male,Traditionnel,common-law,NSAN
+34,13404,29072021,7,suburban,Supermont,female,Protestant,single,RODR
+34,13405,29072021,7,suburban,Behind Carousel,female,Catholic,single,NSAN
+34,13406,29072021,7,suburban,Behind Carousel,female,Catholic,common-law,NSAN
+35,13501,23072021,5,suburban,Minsole 1,female,Protestant,married,LIAP
+35,13502,23072021,13,suburban,Minsole 1,female,Catholic,single,LIAP
+35,13503,23072021,6,suburban,Minsole 1,male,Other,single,LIAP
+35,13504,23072021,6,suburban,Minsole 1,male,Other,single,LIAP
+35,13505,23072021,4,suburban,Minsole 1,male,none,single,LIAP
+35,13506,23072021,6,suburban,Minsole 1,male,Protestant,married,LIAP
+35,13507,23072021,6,suburban,Minsole 1,male,Protestant,single,LIAP
+35,13508,23072021,5,suburban,Minsole 1,male,Catholic,married,LIAP
+35,13509,23072021,4,suburban,Minsole 1,male,Catholic,single,LIAP
+35,13510,23072021,5,suburban,Minsole 1,male,Muslim,single,LIAP
+35,13511,23072021,7,suburban,Minsole 1,male,Catholic,single,LIAP
+35,13512,23072021,5,suburban,Minsole 1,female,Protestant,married,LIAP
+36,13601,23072021,10,suburban,Nkie riviere,female,Catholic,married,ATSA
+36,13602,23072021,8,suburban,Nkie riviere,female,Other,common-law,ATSA
+36,13603,27072021,8,suburban,Nkie riviere,female,Other,single,ATSA
+36,13604,24072021,5,suburban,Supermont,female,Catholic,married,ATSA
+36,13605,24072021,9,suburban,Elig Mbida Medoumba,female,Catholic,married,ATSA
+36,13606,24072021,8,suburban,Elig Mbida Medoumba,female,Protestant,married,ATSA
+36,13607,24072021,9,suburban,Nkie riviere,female,Catholic,married,ATSA
+38,13801,23072021,5,suburban,Supermont,female,Catholic,common-law,HONO
+38,13802,23072021,5,suburban,Supermont,female,Catholic,common-law,HONO
+38,13803,23072021,7,suburban,Supermont,female,Catholic,married,HONO
+38,13804,23072021,4,suburban,Supermont,female,Catholic,common-law,HONO
+38,13805,23072021,5,suburban,Supermont,female,Catholic,married,HONO
+38,13806,24072021,5,suburban,Supermont,female,Catholic,married,HONO
+38,13807,24072021,10,suburban,Supermont,female,Catholic,common-law,HONO
+38,13808,24072021,4,suburban,Supermont,female,Catholic,married,HONO
+38,13809,24072021,8,suburban,Supermont,female,Catholic,married,HONO
+38,13810,24072021,7,suburban,Supermont,female,Catholic,married,HONO
+38,13811,24072021,7,suburban,Supermont,female,Catholic,married,HONO
+40,14001,29072021,4,urban,Derriere college nfanja,male,Muslim,married,NSAN
+40,14002,29072021,10,urban,Derriere college nfanja,male,Protestant,common-law,NSAN
+40,14003,29072021,5,urban,Supermont,male,Muslim,married,NSAN
+40,14004,29072021,6,urban,Derriere college nfanja,male,Catholic,common-law,NSAN
+40,14005,29072021,5,urban,Morgue CFTA,female,Traditionnel,single,NSAN
+40,14006,29072021,9,urban,Derriere college nfanja,male,Traditionnel,common-law,NSAN
+40,14007,29072021,6,urban,Derriere college nfanja,female,Catholic,married,NSAN
+40,14008,29072021,5,urban,Derriere college nfanja,female,Catholic,widowed,NSAN
+40,14009,29072021,3,urban,Morgue CFTA,female,Catholic,single,NSAN
+40,14010,29072021,3,urban,Morgue CFTA,female,Animist,single,NSAN
+41,14101,25072021,7,urban,Derriere college nfanja,male,Catholic,married,BAHA
+41,14102,23072021,6,urban,Derriere college nfanja,female,Protestant,married,BAHA
+41,14103,23072021,4,urban,Derriere college nfanja,female,Catholic,married,BAHA
+41,14104,23072021,4,urban,Derriere college nfanja,male,Other,married,BAHA
+41,14105,23072021,11,urban,Derriere college nfanja,female,Protestant,married,BAHA
+41,14106,23072021,5,urban,Derriere college nfanja,female,Catholic,married,BAHA
+41,14107,23072021,4,urban,Derriere college nfanja,male,Catholic,married,BAHA
+41,14108,23072021,8,urban,Derriere college nfanja,male,Catholic,married,BAHA
+41,14109,23072021,9,urban,Derriere college nfanja,female,Catholic,married,BAHA
+41,14110,23072021,4,urban,Derriere college nfanja,female,Catholic,single,BAHA
+41,14111,23072021,4,urban,Derriere college nfanja,male,Protestant,married,BAHA
+41,14112,23072021,4,urban,Derriere college nfanja,male,Protestant,married,BAHA
+42,14201,26072021,4,urban,Ekie Chieftainship,female,Muslim,married,DONG
+42,14202,26072021,8,urban,Supermont,male,Traditionnel,common-law,DONG
+42,14203,26072021,7,urban,Supermont,female,Catholic,single,DONG
+42,14204,26072021,5,urban,Supermont,female,Catholic,single,DONG
+42,14205,28072021,5,urban,Supermont,female,Other,common-law,DONG
+42,14206,29072021,7,urban,Supermont,female,Catholic,married,DONG
+42,14207,29072021,8,urban,Supermont,female,Catholic,married,DONG
+42,14208,29072021,8,urban,Supermont,female,Catholic,single,DONG
+42,14209,29072021,7,urban,Supermont,female,Catholic,common-law,DONG
+43,14301,23072021,4,urban,Minsole 1,female,Catholic,common-law,PAME
+43,14302,23072021,5,urban,Minsole 1,female,Catholic,common-law,PAME
+43,14303,23072021,9,urban,Minsole 1,female,Catholic,common-law,PAME
+43,14304,23072021,8,urban,Minsole 2,female,Protestant,common-law,PAME
+43,14305,23072021,9,urban,Minsole 1,female,Catholic,common-law,PAME
+43,14306,24072021,4,urban,Supermont,female,Protestant,single,PAME
+43,14307,24072021,4,urban,Supermont,female,Catholic,widowed,PAME
+43,14308,24072021,5,urban,Supermont,male,Catholic,common-law,PAME
+43,14309,24072021,4,urban,Supermont,female,Protestant,common-law,PAME
+43,14310,24072021,3,urban,Supermont,female,Protestant,married,PAME
+53,14311,24072021,4,urban,Supermont,female,Catholic,common-law,PAME
+43,14312,24072021,7,urban,Supermont,female,Catholic,single,PAME
+43,14313,24072021,4,urban,Supermont,female,Other,common-law,PAME
+43,14314,24072021,6,urban,Supermont,female,Protestant,common-law,PAME
+43,14315,24072021,4,urban,Supermont,female,Catholic,common-law,PAME
+44,14401,27072021,4,urban,Supermont,female,Catholic,common-law,RODR
+44,14402,27072021,4,urban,Supermont,female,Catholic,common-law,RODR
+44,14403,27072021,6,urban,Supermont,female,Catholic,common-law,RODR
+44,14404,27072021,8,urban,Supermont,female,Catholic,common-law,RODR
+44,14405,27072021,7,urban,Supermont,female,Catholic,common-law,RODR
+44,14406,27072021,4,urban,Supermont,male,Traditionnel,common-law,RODR
+44,14407,27072021,6,urban,Supermont,male,Catholic,common-law,RODR
+44,14408,27072021,9,urban,Supermont,male,Catholic,single,RODR
+47,14701,21072021,4,urban,Okui chez papa Francois,female,Catholic,single,FEGA
+47,14702,21072021,9,urban,Okui chez papa Francois,female,Catholic,common-law,FEGA
+47,14703,21072021,3,urban,Okui chez papa Francois,male,Muslim,married,FEGA
+47,14704,21072021,7,urban,Okui chez papa Francois,female,Catholic,common-law,FEGA
+47,14705,21072021,8,urban,Okui chez papa Francois,female,Catholic,common-law,FEGA
+47,14706,21072021,9,urban,Okui chez papa Francois,female,Protestant,common-law,FEGA
+47,14707,21072021,5,urban,Okui chez papa Francois,male,Other,common-law,FEGA
+47,14708,21072021,4,urban,Okui chez papa Francois,female,Other,common-law,FEGA
+47,14709,21072021,10,urban,Okui chez papa Francois,female,Protestant,married,FEGA
+49,14901,27072021,5,urban,Nono petit terrain,female,Catholic,common-law,DOUMB
+49,14903,27072021,7,urban,Nono petit terrain,male,Protestant,married,DOUMB
+49,14904,27072021,7,urban,Nono petit terrain,female,Catholic,married,DOUMB
+49,14905,29072021,9,urban,Nono petit terrain,female,Catholic,single,DOUMB
+49,14906,29072021,9,urban,Nono petit terrain,female,Catholic,single,DOUMB
+49,14907,29072021,6,urban,Nono petit terrain,female,Protestant,married,DOUMB
+51,15101,25072021,5,urban,Okui chez papa Francois,female,Catholic,single,BAHA
+51,15102,25072021,3,urban,Okui chez papa Francois,male,Catholic,married,BAHA
+51,15103,25072021,4,urban,Okui chez papa Francois,male,Protestant,married,BAHA
+51,15104,25072021,4,urban,Okui chez papa Francois,male,Protestant,married,BAHA
+51,15105,25072021,8,urban,Okui chez papa Francois,male,Protestant,married,BAHA
+51,15106,25072021,7,urban,Okui chez papa Francois,female,Catholic,married,BAHA
+51,15107,29072021,11,urban,Okui chez papa Francois,male,Traditionnel,common-law,BAHA
+51,15108,25072021,9,urban,Okui chez papa Francois,female,Protestant,married,BAHA
+51,15109,25072021,13,urban,Okui chez papa Francois,female,Protestant,married,BAHA
+51,15110,25072021,21,urban,Okui chez papa Francois,male,Catholic,married,BAHA
+51,15111,25072021,4,urban,Okui chez papa Francois,male,Catholic,married,BAHA
+53,15301,25072021,7,urban,Okoui Maetur,female,Other,married,PAME
+53,15302,25072021,4,urban,Supermont,female,Protestant,single,PAME
+53,15303,25072021,4,urban,Supermont,female,Catholic,single,PAME
+53,15304,25072021,3,urban,Supermont,female,Muslim,common-law,PAME
+53,15305,25072021,8,urban,Supermont,female,Other,married,PAME
+53,15306,25072021,4,urban,Supermont,female,Catholic,single,PAME
+53,15307,25072021,5,urban,Okoui Maetur,male,Traditionnel,common-law,PAME
+53,15308,25072021,4,urban,Supermont,female,Catholic,common-law,PAME
+53,15309,25072021,12,urban,Supermont,male,Traditionnel,common-law,PAME
+53,15310,25072021,9,urban,Supermont,female,Catholic,common-law,NSAN
+53,15311,25072021,5,urban,Supermont,female,Catholic,married,PAME
+53,15312,25072021,6,urban,Supermont,female,Protestant,married,PAME
+53,15313,28072021,2,urban,Supermont,female,Catholic,single,PAME
+53,15314,25072021,8,urban,Supermont,female,Catholic,single,PAME
+54,15401,28072021,7,urban,Derriere college nfanja,female,Catholic,widowed,NSAN
+54,15402,28072021,4,urban,Derriere college nfanja,male,Catholic,single,RODR
+54,15403,28072021,10,urban,Derriere college nfanja,female,Catholic,common-law,RODR
+54,15404,28072021,5,urban,Derriere college nfanja,female,Catholic,common-law,RODR
+54,15405,28072021,7,urban,Derriere college nfanja,female,Other,common-law,RODR
+54,15406,28072021,7,urban,Derriere college nfanja,female,Catholic,single,RODR
+54,15407,28072021,14,urban,Derriere college nfanja,male,Other,married,RODR
+54,15408,28072021,6,urban,Derriere college nfanja,female,Protestant,married,RODR
