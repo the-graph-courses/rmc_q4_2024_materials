@@ -1,0 +1,270 @@
+---
+title: "RMasterclass Week 5 workshop"
+subtitle: "Strings and Dates practice"
+author: "YOUR NAME HERE" # Remember to add your name!
+date: "2024-10-30"
+editor_options: 
+  chunk_output_type: inline
+  markdown: 
+    wrap: none
+---
+
+# Introduction
+
+Welcome to the Week 5 workshop! 
+
+Today you will be manipulating strings and dates to clean a messy dataset.
+
+Please refer to the lesson notes to aid you in the workshop exercise:
+
+-   [Intro to Dates](https://the-graph-courses.github.io/fdar/FDAR_EN_dates_1/FDAR_EN_dates_1.html)
+-   [Strings in R](https://the-graph-courses.github.io/fdar/FDAR_EN_strings_1/FDAR_EN_strings_1.html)
+
+# Load packages
+
+Run this code chunk to load the necessary packages for this workshop.
+
+NOTE: the {lubridate} package is not loaded with old version of {tidyverse}. If you don't have the latest version of {tidyverse} installed, you will need to add {lubridate} to the package list.
+
+```{r}
+pacman::p_load(tidyverse, # includes lubridate, stringr, readr, dplyr, and ggplot2
+               here, 
+               janitor)
+```
+
+# Today's Dataset: Pediatric HIV Survey from Cameroon
+
+In your data folder, you will find a CSV called "yaounde_ped_hiv_survey.csv". These records are from a survey conducted by the HIV care unit of a pediatric service in Yaoundé, Cameroon.
+
+Children aged 0-5 years were seen during routine visits in July-August 2021, and information on diseases presented by the children during the past month was collected.
+
+Let's start by importing the CSV.
+
+```{r}
+# Import the data set as hiv_survey_data
+hiv_survey_data <- read_csv(here("data/yaounde_ped_hiv_survey.csv"))
+```
+
+*CHECKPOINT*: The dataframe should have 199 rows and 11 columns.
+
+```{r}
+# Inspect the variables
+head(hiv_survey_data, 10)
+```
+
+Pay special attention to the key variables for today's analysis:
+
+-   `sex`: Sex of the child, with "m" for male and "f" for female.
+-   `visit_day`: The day of the month that the child was seen.
+-   `visit_month`: The month and year that the child was seen.
+-   `disease_past_month`: The ailment reported by parents as having occurred in the child during the past month.
+-   `arv_treatment`: The antiretroviral (ARV) drug regimen received by the child. A combination of three drugs is reported.
+-   `water_container_washing_freq`: The frequency of washing the container used for the collection and transport of water used in the household.
+
+# Data analysis
+
+## Question 1: Separating drug names
+
+### Part A
+
+The `arv_treatment` column describes the HIV treatment regimen, which is a combination of three drugs separated by the + sign.
+
+First, let's take a look at all the unique values in this column.
+
+Create a frequency table to show the each unique drug combination in `arv_treatment`, and how many times each one occurs in this dataset.
+
+```{r}
+# Create a frequency table of values in arv_treatment
+
+"WRITE_YOUR_CODE_HERE"
+
+# HINT: You can use the count() function from {dplyr} or tabyl() from {janitor}.
+```
+
+*CHECKPOINT*: You should get a table with 6 rows. Note that there are 4 unique drug combinations, one "Other", and one NA.
+
+| arv_treatment |   n |
+|:--------------|----:|
+| AZT+3TC+EFV   |  10 |
+| AZT+3TC+NVP   |  88 |
+| D4T+3TC+NVP   |   5 |
+| Other         |   1 |
+| TDF+3TC+EFV   |  94 |
+| NA            |   1 |
+
+### Part B
+
+Split the `arv_treatment` column into three new columns: `treatment_1`, `treatment_2`, and `treatment_3`.
+
+*HINT*: You can find the relevant lesson notes for this question [here](https://the-graph-courses.github.io/fdar/FDAR_EN_strings_1/FDAR_EN_strings_1.html#63_Separating_Special_Characters).
+
+```{r}
+# Use the separate() function to split strings in arv_treatment into three new columns
+hiv_survey_data <- hiv_survey_data %>% 
+ # WRITE YOUR CODE HERE
+```
+
+*NOTE*: You may get a warning message about the NA value in row 66. This is not an issue so you can ignore the message.
+
+### Part C
+
+The third drug listed in `arv_treatment` is either efavirenz (EFV) or nevirapine (NVP). Create a frequency table tallying the number of children receiving each of these two drugs.
+
+*HINT*: Use one of your new columns created in part B.
+
+```{r}
+"WRITE_YOUR_CODE_HERE"
+```
+
+*CHECKPOINT*: You should see that 104 children are on EFV, 93 children on NVP, and two NAs.
+
+## Question 2: Cleaning messy disease names
+
+The `disease_past_month` records ailments child had during the one month prior to the visit.
+
+Let's list the different diseases listed in this column:
+
+```{r}
+# Get unique disease names and print alphabetically
+hiv_survey_data$disease_past_month %>% 
+  unique() %>% 
+  sort()
+```
+
+As you can see, there are several string inconsistencies in this variable. Namely:
+
+-   Inconsistent capitalization: the same disease is sometimes entered in uppercase and sometimes in lowercase
+
+-   Inconsistent spacing: There are varying numbers of spaces between words.
+
+### Part A
+
+Transform `disease_past_month` to create a new variable called `disease_past_month_clean`, with standardized capitalization and spacing.
+
+You goals are to:
+
+-   Convert all characters to the same case
+
+-   Reduce internal spaces
+
+*HINT*: You can find the relevant lesson notes for this question in the table [here](https://the-graph-courses.github.io/fdar/FDAR_EN_strings_1/FDAR_EN_strings_1.html#Wrap_up).
+
+```{r}
+# Clean messy character strings in disease column
+"WRITE_YOUR_CODE_HERE"
+```
+
+Now check the unique values in `disease_past_month_clean` to see if your cleaning worked as desired.
+
+```{r eval = F}
+hiv_survey_data$disease_past_month_clean %>% 
+  unique() %>% 
+  sort()
+```
+
+*CHECKPOINT*: You should now have 17 unique diseases.
+
+## Question 3: Plotting and labeling
+
+The main objective of the study was to record any diseases noticed among these children, with a particular focus on diarrheal diseases and their possible causes. Water quality in each household was assessed by recording how often households washed the container used for the collection and transport of water (`water_container_washing_freq`).
+
+Let's look at the unique values in this column.
+
+```{r}
+hiv_survey_data %>% 
+  count(water_container_washing_freq)
+```
+
+### Part A
+
+Make a bar chart showing the distribution of the `water_container_washing_freq` variable. Use the appropriate `str_*()` function to ensure that the text labels on the x axis do not overlap.
+
+```{r}
+# Bar chart of water_container_washing_freq
+"WRITE_YOUR_CODE_HERE"
+
+# HINT: The most efficient ggplot geom for this plot is geom_bar(). 
+```
+
+### Part B
+
+Edit the axis labels and title of the plot.
+
+-   Remove the x and y axis labels.
+-   Add a title "Frequency of washing the container used for the collection and transport of household water"
+-   Wrap the title text so that it fits in the plot area.
+-   Optional: edit the themes and color scheme of the plot to be more visually appealing. See "*Q3b_example_plot.jpg*" in the workshop project folder for inspiration.
+
+```{r}
+# Basic
+"WRITE_YOUR_CODE_HERE"
+```
+
+## Question 4: Creating date variables
+
+We want a variable recording the date of each survey visit. Currently, the data frame doesn't have a variable giving us the day, month, and year of each visit. Instead we have two variables:
+
+-   `visit_day` - day of the month in the format "%d"
+
+-   `visit_month` - month and year in the format "%m.%Y"
+
+```{r}
+hiv_survey_data %>% 
+  select(visit_day, visit_month) %>% 
+  head()
+```
+
+Combine the day of visit and month of visit variables into a new date variable, called `visit_date`.
+
+You will need to write code that will accomplish both tasks:
+
+1.  Paste the two variables together with a consistent separator.
+
+2.  Convert the new variable from character to date.
+
+*HINT*: When you paste the strings together, use the `sep` argument in `paste()` to add a dot after the day of the month. This will give character strings with the format "%d.%m.%Y", which can then be converted into date format.
+
+```{r}
+# Combine the variables into a single variable AND convert to date in one step using nested functions
+"WRITE_YOUR_CODE_HERE"
+```
+
+*CHECKPOINT*: Uncomment the code below to check that your variable is now a date.
+
+```{r}
+# hiv_survey_data$visit_date %>% class()
+```
+
+## Question 5: Tallying visits per month
+
+### Part A
+
+Create a summary table showing the number of boys and girls seen each month.
+
+Your output should look something like this:
+
++---------------------+--------------+--------------+
+| visit_month_label   | sex          | total_value  |
+|                     |              |              |
+| \<ord\>             | \<chr\>      | \<int\>      |
++====================:+:=============+=============:+
+| July                | f            | 109          |
++---------------------+--------------+--------------+
+| July                | m            | 61           |
++---------------------+--------------+--------------+
+| August              | f            | 14           |
++---------------------+--------------+--------------+
+| August              | m            | 15           |
++---------------------+--------------+--------------+
+
+Note that the month name is written out fully.
+
+*HINT*: There are multiple ways to achieve this. You can extract month name from a date variable using functions like `format()` from base R or `month()` from {lubridate}. You can run `?month` to see examples of how to use that function.
+
+```{r}
+"WRITE_YOUR_CODE_HERE"
+```
+
+## CHALLENGE: Extract day of the week
+
+Plot a bar graph showing the number of visits per each day, for the seven days of the week. The bars should be labeled with the abbreviated day name (Mon, Tue, etc.).
