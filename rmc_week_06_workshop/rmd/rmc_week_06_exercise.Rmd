@@ -1,0 +1,456 @@
+---
+title: "Workshop Exercise: Week 6"
+subtitle: "Data Cleaning"
+author: "YOUR NAME HERE" # Remember to add your name!
+date: "2024-11-06"
+editor_options: 
+  chunk_output_type: inline
+  markdown: 
+    wrap: none
+---
+
+# Introduction
+
+In this workshop, you'll learn how to clean and analyze HIV and AIDS data across different countries and years. We will start with raw datasets containing estimates of new and total HIV cases per country-year. The goal is to clean and merge these datasets with population data, allowing us to explore trends and patterns effectively.
+
+Please refer to the lesson notes to aid you in the workshop exercise:
+
+-   [Data Cleaning 1: Data Diagnostics](https://the-graph-courses.github.io/fdar/FDAR_EN_data_cleaning_1/FDAR_EN_data_cleaning_1.html)
+-   [Data Cleaning 2: Fixing Inconsistencies](https://the-graph-courses.github.io/fdar/FDAR_EN_data_cleaning_2/FDAR_EN_data_cleaning_2.html)
+
+## Objectives
+
+By the end of this workshop, you should be able to:
+
+-   Pivot HIV datasets to a long format.
+-   Handle non-numeric values in case columns that include characters.
+-   Standardize country names using ISO codes to facilitate data merging.
+-   Join the cleaned HIV data with population data.
+-   Visualize the data to analyze trends.
+
+# Initial Setup
+
+Before you begin, make sure you have all the necessary libraries loaded. We will use the `pacman` package for dependency management, which simplifies loading and installing packages.
+
+### Step 1: Load Required Libraries
+
+```{r setup, include=FALSE}
+if(!require(pacman)) install.packages("pacman")
+pacman::p_load(tidyverse, 
+               here,
+               visdat, 
+               inspectdf,
+               countrycode)
+```
+
+# Data Importation
+
+We will work with two raw datasets, each containing estimates per country-year. These data were accessed from the Gapminder foundation, at [www.gapminder.org/data](https://www.gapminder.org/data){.uri}.
+
+1.  **People living with HIV:** This dataset contains the total number of people currently infected with HIV (*data/people_living_with_hiv_number_all_ages.csv*).
+2.  **New HIV infections:** This dataset provides the total number of people newly infected with HIV during a given year (*data/newly_hiv_infected_number_all_ages.csv*).
+
+### Step 2: Load the Datasets
+
+Load the datasets into R using `read_csv()`.
+
+```{r import-data}
+# Load raw data from specified paths
+total_hiv_raw <- read_csv(here("data/people_living_with_hiv_number_all_ages.csv"))
+
+new_hiv_raw <- read_csv(here("data/newly_hiv_infected_number_all_ages.csv"))
+```
+
+# Data Diagnostics
+
+Before diving into data cleaning, it's important to understand the structure and content of the datasets. This will help us identify any potential issues that need to be addressed.
+
+### Step 3: Examine the Structure
+
+Use the `str()` function to examine the structure of each dataset. This will give you an overview of the variables and their data types.
+
+**HINT:** Look for the following:
+
+-   Are all variables of the correct type?
+
+-   Are the year columns stored as numeric data?
+
+```{r data-summary-new}
+# Display the structure of new_hiv_raw
+"WRITE_YOUR_CODE_HERE"
+```
+
+```{r data-summary-total}
+# Display the structure of total_hiv_raw
+"WRITE_YOUR_CODE_HERE"
+```
+
+### Step 4: Visualize Data Types and Missing Values
+
+Visual representations can quickly highlight issues such as missing data or incorrect data types. Use the `vis_dat()` function to visualize each dataset.
+
+**HINT:** The visualization should show if there are any missing values across different countries and years.
+
+```{r}
+# Visualize new_hiv_raw
+"WRITE_YOUR_CODE_HERE"
+```
+
+```{r}
+# Visualize total_hiv_raw
+"WRITE_YOUR_CODE_HERE"
+```
+
+**CHECKPOINT:** Notice any columns with significant missing data. For example, in `total_hiv_raw`, the years 1979-1989 are mostly empty, which suggests that these columns may not be useful for analysis.
+
+### Step 5: Explore Categorical Variables
+
+Use `inspect_cat()` and `show_plot()` to get a deeper understanding of categorical variables, which helps in identifying inconsistencies and missing data.
+
+```{r}
+# Visualize categorical summary for new_hiv_raw
+"WRITE_YOUR_CODE_HERE"
+```
+
+**Note:** While there are a lot of missing values, we saw from our {visdat} plot above that there were several countries for which we have very little data. This could be because the surveillance and reporting capacities for new cases is low in those areas.
+
+```{r}
+# Visualize categorical summary for total_hiv_raw
+"WRITE_YOUR_CODE_HERE"
+```
+
+# Data Cleaning
+
+Now that we have diagnosed the data, it's time to clean it, starting with transforming the datasets into a more usable format.
+
+## Pivot to Long Format
+
+### Step 6: Pivot New HIV Data
+
+The datasets are currently in wide format, with each year as a separate column. We need to convert this to long format, where each row represents a single year for a country.
+
+Start with `new_hiv_raw`:
+
+**HINT:** Use `pivot_longer()` to reshape the data, with `country` remaining as the key variable.
+
+```{r long-format-new}
+new_hiv_long <- "WRITE_YOUR_CODE_HERE"
+
+new_hiv_long
+```
+
+**CHECKPOINT:** After pivoting, each row should represent a unique combination of `country` and `year`, with `new_cases` as the corresponding value. You should have a dataset with **3146 rows and 3 columns.**
+
+### Step 7: Pivot Total HIV Data
+
+Now, pivot `total_hiv_raw`. We also want to select a specific time range, so limit the years to 1990-2011.
+
+**HINT:** Use the `select()` function to include only the columns for the years 1990 to 2011. This ensures that we are working with a consistent time range across datasets.
+
+```{r long-format-total}
+total_hiv_long <- "WRITE_YOUR_CODE_HERE"
+
+total_hiv_long
+```
+
+**CHECKPOINT:** Verify that `total_hiv_long` now contains a `country`, `year`, and `total_cases` column, with one row for each country-year combination. You should have a dataset with **3278 rows and 3 columns.**
+
+## Converting Data Types
+
+### Step 8: Check Data Types
+
+Now that the datasets are in long format, check the data types of the columns.
+
+```{r}
+# Check data types in new_hiv_long
+str(new_hiv_long)
+```
+
+```{r}
+# Check data types in total_hiv_long
+str(total_hiv_long)
+```
+
+**CHECKPOINT:** You should see that all variables are still of type `character`, however we want the `year` and `cases` columns to be numeric. We will fix this next.
+
+### Step 9: Handle Non-Numeric Characters
+
+Some of the values in the cases columns include non-numeric characters such as 'k' (thousands) or 'M' (millions). We need to remove these suffixes and convert the values to numeric.
+
+We can convert the year and cases columns with `mutate()` from {dplyr}.
+
+We could just apply `as.numeric()` to those variables, but this will not give us the desired result. For example, run this code and examine the output:
+
+```{r}
+total_hiv_long %>%
+  mutate(
+    year_numeric = as.numeric(year),
+    total_cases_numeric = as.numeric(total_cases)
+    )
+```
+
+**Note:** While this works fine for the `year` column, converting the `total_cases` column to numeric will not work on entries that have a 'k' and 'M' suffix. These will be converted to NAs. For example, on row 23, we have "33k" in `total_cases`. The corresponding value in `total_cases_numeric` is `NA`. But we want it as 33000.
+
+To appropriately handle this, our next steps are clean the `total_cases` and `new_cases` variables by doing the following:
+
+1.  Remove the 'k' and 'M' suffixes
+2.  Convert them into numeric
+3.  Multiply the numbers by a 1000 or 100000, depending on their original suffix.
+
+**Note:** To do this, we'll need to do some complex string manipulation with `str_detect()` and `str_remove()` from the {stringr} package. Since these were not covered in our String Manipulation lesson from Week 6, we have provided you with some code scaffolding and code breakdown to help you out.
+
+1.  Use the `str_detect()` function to check if the string ends with 'k' or 'M' and use the `str_remove()` function to remove these characters.
+2.  Use `as.numeric()` to convert the remaining string to a numeric value.
+3.  Finally, multiply the numeric values by 1000 or 1,000,000 as appropriate. Read the provided code breakdown for further hints:
+
+Code breakdown:
+
+-   **`mutate()`** is used to create a new `total_cases_numeric` column by modifying the **`total_cases`** column.
+-   The **`case_when()`** function is used to handle each entry based on whether the string ends with "k" or "M".
+    -   **`str_detect(., 'k$')`** checks if the string ends with "k", and **`str_detect(., 'M$')`** does the same for "M".
+    -   **`str_remove(., 'k')`** and **`str_remove(., 'M')`** remove the "k" or "M" from the string, respectively.
+    -   **`as.numeric()`** converts the resulting string to a numeric value after the removal.
+    -   The resulting numeric values are multiplied by 1,000 if the string ended with "k" or 1,000,000 if the string ended with "M", using the **`*`** operator.
+
+```{r cases-to-numeric-total, warning=FALSE}
+# Convert total_cases to numeric in total_hiv_long
+total_hiv_numeric <- total_hiv_long %>%
+  mutate(
+    # Convert year to numeric
+    ________________________,
+    # Remove 'k' and 'M' and convert to numeric
+    total_cases_numeric = _______________
+      str_detect(__________, 'k$') ~ as.numeric(str_remove(________________)) * ________,
+      str_detect(__________, 'M$') ~ as.numeric(str_remove(________________)) * ________,
+      TRUE ~ as.numeric(____________)
+  ))
+
+
+total_hiv_numeric
+```
+
+**CHECKPOINT:** Inspect the transformed `total_hiv_numeric` to ensure that the `total_cases_numeric` column has the correct numeric values.
+
+### Step 10: Repeat for New HIV Data
+
+Apply the same transformation to `new_hiv_long` to handle non-numeric characters.
+
+```{r cases-to-numeric-new, warning=FALSE}
+# Convert new_cases to numeric in new_hiv_long
+new_hiv_numeric <- new_hiv_long %>%
+  mutate(
+    # Convert year to numeric
+    ________________________,
+    # Remove 'k' and 'M' and convert to numeric
+    total_cases_numeric = _______________
+      str_detect(__________, 'k$') ~ as.numeric(str_remove(________________)) * ________,
+      str_detect(__________, 'M$') ~ as.numeric(str_remove(________________)) * ________,
+      TRUE ~ as.numeric(____________)
+  ))
+
+new_hiv_numeric
+```
+
+**CHECKPOINT:** Verify that the `new_cases_numeric` column in `new_hiv_numeric` has been correctly transformed to numeric values.
+
+## Joining HIV Data
+
+### Step 11: Join the Datasets
+
+Now that both datasets are cleaned and in long format, we can join them. We will use the `country` and `year` columns as the keys.
+
+**HINT:** `left_join()` can be used here to retain all records from `total_hiv_numeric`, even if there isn't a matching record in `new_hiv_numeric`.
+
+```{r join-datasets}
+# Join the new and total HIV datasets
+hiv_data_combined <- "WRITE_YOUR_CODE_HERE"
+
+hiv_data_combined
+```
+
+**CHECKPOINT:** The combined dataset should have columns for `country`, `year`, `total_cases_numeric`, and `new_cases_numeric`. You should have a dataset with **3278 rows and 6 columns.**
+
+# Adding Population Data
+
+We will now integrate population data from the `tidyr::population` dataset. However, before we can merge, we need to ensure that the country names match between the datasets.
+
+### Step 12: Load Population Data
+
+Let's start by loading the population data:
+
+```{r}
+# Load population data
+pop <- tidyr::population
+pop
+```
+
+### Step 13: Check for Country Name Consistency
+
+Use `setdiff()` to identify any mismatches between country names in `hiv_data_combined` and `pop`. This will help us identify potential issues before merging.
+
+**HINT:** The `setdiff()` function shows the elements in the first vector that are not in the second. Here, we want to show country names in `hiv_data_combined` that don't match any in `pop`.
+
+```{r}
+# Check for country name mismatches
+"WRITE_YOUR_CODE_HERE"
+```
+
+Unfortunately, there are many country names that don't match.
+
+Thankfully, there's a package in R that can be quite helpful for this: {countrycode}. This package can convert various country names into standard ISO codes. It's robust enough to handle many common variations and spelling differences.
+
+### Step 14: Standardize Country Names
+
+We can use the `countrycode()` function to map the dataset's country names to their corresponding ISO codes.
+
+For example, let's add ISO codes to each dataset for a consistent joining key.
+
+```{r add-iso}
+# Add ISO codes to hiv_data_combined
+hiv_data_combined <- hiv_data_combined %>%
+  mutate(country_iso = countrycode(country, "country.name", "iso3c"))
+
+hiv_data_combined
+```
+
+Now, do the same for the `pop` data frame:
+
+```{r}
+# Add ISO codes to pop
+pop_iso <- "WRITE_YOUR_CODE_HERE"
+
+pop_iso
+```
+
+**CHECKPOINT:** Ensure that both datasets now have a `country_iso` column with ISO 3-letter country codes. You should have a dataset with **4060 rows and 4 columns.**
+
+## Joining with Population Data
+
+### Step 15: Merge Population Data
+
+Now that we have the country's ISO codes, join the combined HIV data with the population data using the ISO codes.
+
+**HINT:** Ensure that you are joining on `country_iso` and `year` to accurately align the datasets.
+
+```{r population-join}
+# Join HIV data with population data
+final_dataset <- "WRITE_YOUR_CODE_HERE"
+
+final_dataset
+```
+
+**CHECKPOINT:** The `final_dataset` should now include population data alongside the HIV case data, allowing for more detailed analysis. You should have a dataset with **3278 rows and 9 columns.**
+
+# Data Visualization
+
+With the data cleaned and merged, you're ready to create visualizations that explore trends in HIV prevalence and new infections.
+
+### Step 16: Visualize the Data
+
+Create a plot that shows the trend of new HIV cases over time for three different countries.
+
+```{r visualize-data}
+# Visualize HIV trends for 3 countries
+"WRITE_YOUR_CODE_HERE"
+```
+
+# Challenge: Handling Missing Data with Imputation
+
+In this challenge, you will learn how to handle missing data through mean/median imputation. Imputation is a technique where you estimate and fill in missing values, making your dataset more complete for analysis.
+
+**Concept:** Mean/median imputation consists of replacing all occurrences of missing values (NA) within a variable by the mean if the variable has a Gaussian (normal) distribution, or by the median if the variable is skewed. The mean is appropriate when the data is symmetrically distributed, while the median is better for skewed data as it is less affected by outliers.
+
+### Step 1: Identify Missing Data
+
+Start by identifying where the missing data is in your dataset. Use functions like `is.na()` and `summarise()` to calculate the percentage of missing values for each variable.
+
+**HINT:** Use `mean()` to calculate the percentage of missing values in a column.
+
+```{r identify-missing-data}
+# Calculate the percentage of missing values for each variable
+missing_data_summary <- "WRITE_YOUR_CODE_HERE"
+
+missing_data_summary
+```
+
+**CHECKPOINT:** Identify which variables have significant amounts of missing data that need to be addressed.
+
+### Step 2: Determine the Distribution and Choose Imputation Method
+
+Before imputing missing values, determine whether the distribution of each variable is Gaussian or skewed. This will help you decide whether to use mean or median imputation.
+
+**HINT:** A bell-shaped curve suggests a Gaussian distribution, whereas a distribution that is skewed to the left or right indicates the need for median imputation.
+
+```{r check-distribution}
+# Check the distribution of the variables
+"WRITE_YOUR_CODE_HERE"
+```
+
+**CHECKPOINT:** Based on the visualizations, decide whether to use mean or median imputation for each variable.
+
+### Step 3: Impute Missing Values
+
+Now that you know the distribution of your variables, use the appropriate method to fill in missing values.
+
+```{r impute-missing-data}
+# Impute missing values using the appropriate method
+final_dataset_imputed <- "WRITE_YOUR_CODE_HERE"
+
+final_dataset_imputed
+```
+
+**CHECKPOINT:** After imputation, check if there are any remaining missing values in your dataset.
+
+```{r check-imputation}
+# Check for remaining missing values
+final_dataset_imputed %>%
+  summarise(
+    missing_total_cases = mean(is.na(total_cases_numeric)) * 100,
+    missing_new_cases = mean(is.na(new_cases_numeric)) * 100,
+    missing_population = mean(is.na(population)) * 100
+  )
+```
+
+### Step 4: Compare Pre- and Post-Imputation Data
+
+To understand the impact of your imputation, compare the dataset before and after imputation. Visualize the differences using density plots, boxplots, or difference plots.
+
+```{r compare-imputation}
+# Compare distributions before and after imputation using density plots
+"WRITE_YOUR_CODE_HERE"
+```
+
+## Interpretation of Results
+
+After comparing the distributions before and after imputation, you may notice a significant difference in the distributions for `new_cases_numeric` and `population`. This suggests that the imputation has introduced values that may not reflect the true nature of the data, particularly because the NAs in your dataset represent missing records for certain years rather than random missing values.
+
+## Understanding Systematic Missingness
+
+In your dataset, the missing values for `new_cases_numeric` and `population` are likely due to systematic reasons, such as the absence of data collection or reporting in certain years. This type of missingness is known as **systematic missingness** or **Missing Not at Random (MNAR)**.
+
+### Why Imputation May Not Be Suitable
+
+Imputing values in cases of **systematic missingness** can lead to misleading conclusions because:
+
+-   **Artificial Trends**: Imputation may create artificial trends or data points that never existed, leading to incorrect inferences.
+-   **Bias Introduction**: The imputed values could introduce bias, particularly if the missing data is concentrated in specific time periods or regions.
+
+## How to Proceed with Systematic Missingness
+
+Given the systematic nature of the missing data, here are some recommended approaches:
+
+1.  **Analysis of Available Data:**
+
+    -   Exclude the missing data points: You can proceed with the analysis using only the years with complete data. This is the safest approach when missing data is systematic and related to data collection practices. Flagging Missing Data:
+
+2.  **Use NA as a meaningful indicator:**
+
+    -   Sometimes, the absence of data itself is important. Instead of filling in the gaps, you could analyze the patterns of missing data. For example, how many years are missing data for certain countries? This could highlight issues in data collection or reporting practices.
+
+3.  **Time Series Interpolation**:
+
+    -   If you believe there’s a valid reason to estimate values between known points (e.g., assuming gradual changes between known data points), you might consider interpolation rather than imputation. However, this assumes a smooth change over time, which may or may not be appropriate.
+
+4.  **Separate Analysis of Periods with Data**:
+
+    -   If there are clear periods where data is available and others where it is not, consider splitting your analysis. You could focus on trends within the period where data is robust and avoid making assumptions about periods with missing data.

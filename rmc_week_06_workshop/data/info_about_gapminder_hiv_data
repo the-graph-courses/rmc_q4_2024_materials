@@ -1,0 +1,23 @@
+Gapminder Foundation Data: HIV
+
+# Dataset 1: People living with HIV -------
+
+File path: data/people_living_with_hiv_number_all_ages.csv
+Description: The total number of persons that are estimated to be infected by HIV, including those without symptoms, those sick from AIDS and those healthy due to treatment of the HIV infection
+Source URL: https://www.gapminder.org/data
+Accessed: November 2022
+Temporal range: 1990 - 2011
+Temporal scale: yearly
+Spatial range: global
+Spatial scale: country
+
+# Dataset 2: Newly infected with HIV -------
+
+File path: data/newly_hiv_infected_number_all_ages.csv
+Description: The total number of persons that are estimated to be newly infected with HIV during the given year.
+Source URL: http://www.aidsinfoonline.org (via Gapminder Tools)
+Accessed: November 2022
+Temporal range: 1990 - 2011
+Temporal scale: yearly
+Spatial range: global
+Spatial scale: country
