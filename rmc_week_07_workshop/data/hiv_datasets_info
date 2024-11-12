@@ -1,0 +1,28 @@
+This week's workshop provides 3 CSVs.
+
+1) hiv_total_cases.csv
+
+description: The total number of persons that are estimated to be infected by HIV, including those without symptoms, those sick from AIDS and those healthy due to treatment of the HIV infection
+source_url: https://www.gapminder.org/data
+accessed: November 2022
+temporal range: 1990 - 2011
+temporal scale: yearly
+spatial range: global
+spatial scale: country
+
+2) hiv_new_cases.csv
+description: The total number of persons that are estimated to be newly infected with HIV during the given year.
+source_url: http://www.aidsinfoonline.org (via gapminder)
+accessed: November 2022
+temporal range: 1990 - 2011
+temporal scale: yearly
+spatial range: global
+spatial scale: country
+
+3) world_pop_year.csv
+description: Total population of a country for the given year.
+source: "population" dataset from the {tidyr} package
+temporal range: 1995 - 2013
+temporal scale: yearly
+spatial range: global
+spatial scale: country

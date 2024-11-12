@@ -1,0 +1,459 @@
+---
+title: "R Masterclass | Week 7 Workshop"
+subtitle: "Functions, Conditionals, and For Loops practice"
+author: "YOUR NAME HERE" # Remember to add your name!
+date: 2024-11-13
+editor_options: 
+  chunk_output_type: inline
+  markdown: 
+    wrap: none
+---
+
+# Introduction
+
+Welcome to the last week of data manipulation! In this workshop, you'll be working with a dataset on HIV cases to write functions and use for loops effectively in R.
+
+Please refer to the notes from the prework here:
+
+-   [For Loops in R](https://the-graph-courses.github.io/fdar/FDAR_EN_loops/FDAR_EN_loops.html)
+-   [Functions and Conditionals](https://the-graph-courses.github.io/fdar/FDAR_EN_functions_conditionals/FDAR_EN_functions_conditionals.html)
+
+# Load Packages
+
+Before we begin, load the necessary packages using the `pacman` package, which makes it easier to load multiple packages at once.
+
+```{r}
+pacman::p_load(tidyverse, here, tools)
+```
+
+# Today's Datasets
+
+We have three CSV files located in the `data` subfolder that we will combine and work with today:
+
+-   `hiv_new_cases.csv`
+-   `hiv_total_cases.csv`
+-   `world_pop_year.csv`
+
+These files contain data on HIV new cases, total cases, and world population by year.
+
+*NOTE: See hiv_datasets_info.txt in the "data" folder for more details.*
+
+# TEACHER DEMO: Importing Data with a For Loop
+
+In this week's Loops lesson, you learned how to use loops to perform repetitive tasks. Today, we'll show you how to load multiple datasets at once using a `for` loop.
+
+All the code chunks in this section have been written out for you already. Just run the code to see how it works. The instructor will explain any unfamiliar code during the Workshop Demo.
+
+## Extract Paths and Names
+
+First, we want to create two vectors:
+
+-   One vector of the 3 file paths for each CSV
+
+-   Another vector specifying what to name each CSV when it is imported as a data frame in R
+
+We can create both of these vectors using `list.files()` and `file_path_sans_ext()`.
+
+### Step 1: Extract File Paths
+
+```{r}
+# Extract paths for all .csv files in the data folder
+hiv_data_paths <- list.files(here("data"),
+                             pattern = "*.csv")
+
+# Inspect paths
+hiv_data_paths
+```
+
+*NOTE: `list.files()` finds files in the specified directory. The `pattern = "*.csv"` option ensures only CSV files are included, and `full.names = TRUE` gives the complete file path.*
+
+### Step 2: Create Vector of Data Frame Names
+
+```{r}
+# Create vector of data frame names
+df_names <- file_path_sans_ext(hiv_data_paths)
+
+df_names
+```
+
+*NOTE: `file_path_sans_ext()` removes the file extension from the file name, and `basename()` extracts the file name from the full path.*
+
+### Step 3: Import Each CSV Using `assign()`
+
+Now that we have the file paths and names, we will use a `for` loop to read each CSV and assign it to a data frame in R.
+
+```{r}
+# Read the 3 CSVs into R
+for (i in 1:length(hiv_data_paths)) {
+  assign(df_names[i], read_csv(hiv_data_paths[i]))
+}
+```
+
+*CHECK: View your environment to check that the data frames have been successfully created. You should have 3 datasets in your environment: `hiv_new_cases`, `hiv_total_cases`, `world_pop_year`*
+
+# Data Wrangling
+
+Next, we'll start manipulating the data to prepare it for analysis.
+
+## Joining All Datasets into One
+
+Our objective is to join all three datasets (`hiv_new_cases`, `hiv_total_cases`, `world_pop_year`) into one complete dataset.
+
+### Step 1: Check for Differences
+
+Before joining, let's check if there are any differences between the `hiv_total_cases` and `hiv_new_cases` datasets by checking if both datasets include the same `country` and `year` values.
+
+```{r}
+# Check differences in `country` variable
+setdiff(hiv_total_cases$country, hiv_new_cases$country)
+setdiff(hiv_new_cases$country, hiv_total_cases$country)
+```
+
+```{r}
+# Check differences in `year` variable
+setdiff(hiv_total_cases$year, hiv_new_cases$year)
+setdiff(hiv_new_cases$year, hiv_total_cases$year)
+```
+
+*NOTE: The `hiv_new_cases` dataset has fewer records than the `hiv_total_cases` dataset. For example, there are several countries in the total cases data that are not in the new cases data.*
+
+### Step 2: Join the Datasets
+
+Join the `hiv_new_cases` and `hiv_total_cases` datasets so that we only include countries and years present in **BOTH** datasets.
+
+```{r}
+# Join HIV datasets to include countries and years in BOTH datasets
+hiv_new_total <- __________(hiv_new_cases, hiv_total_cases)
+```
+
+*CHECK: You should have 1360 rows and 4 columns.*
+
+### Step 3: Add Population Data
+
+Now, let's add the population data (`world_pop_year`) to the joined HIV dataset (`hiv_new_total`).
+
+First, check if there are any differences between the `hiv_new_total` dataset and `world_pop_year` dataset by checking if both datasets include the same `country` and `year` values.
+
+```{r}
+# Check differences in `country` variable
+setdiff(hiv_new_total$country, world_pop_year$country)
+setdiff(world_pop_year$country, hiv_new_total$country)
+```
+
+```{r}
+# Check differences in `year` variable
+setdiff(hiv_new_total$year, world_pop_year$year)
+setdiff(world_pop_year$year, hiv_new_total$year)
+```
+
+*NOTE: We notice that some values are missing from the year and country variables from both datasets.*
+
+### Step 4: Handle Missing Values
+
+Let's create a subset that contains **ALL** the `NA` values from the `population` variable. We will be using this dataset later in the exercise.
+
+```{r}
+# Join population dataset to joined HIV dataset
+hiv_full_pop_NA <- full_join(hiv_new_total, world_pop_year) %>%
+  filter(is.na(population))
+
+hiv_full_pop_NA
+```
+
+Next, create a dataset that does not contain any missing values and includes only the countries and years present in **BOTH** datasets.
+
+```{r}
+# Join population dataset to joined HIV dataset
+hiv_full <- ________(hiv_new_total, world_pop_year)
+```
+
+*CHECK: You should have 1020 rows and 5 columns.*
+
+## Pivoting
+
+We'll continue working with the `hiv_full` dataset for the following steps:
+
+### Step 1: Pivot the Dataset to Long Format
+
+Instead of having separate columns for new cases and total cases, collapse them into one column with **case count** and another column indicating the **type of cases** (new_cases or total_cases).
+
+```{r}
+# Pivot the dataset to long format
+hiv_long <- ____________(hiv_full, 
+                         cols = c(_________, __________),
+                         values_to = "cases",
+                         names_to = "type")
+```
+
+*CHECK: You should have 2040 rows and 5 columns.*
+
+# Plotting with For Loops
+
+Now that we have a long-format dataset, let's create a plot to visualize the data.
+
+## Step 1: Create a Plot for a Single Country
+
+Let's use the `hiv_long` dataset to make a plot of HIV cases over time for a single country, such as Bangladesh.
+
+```{r}
+hiv_long %>% 
+  filter(country == "Bangladesh") %>% 
+  ggplot(aes(x = year, 
+             y = cases, 
+             color = type)) +
+  geom_line() +
+  labs(title = "HIV cases in Bangladesh")
+```
+
+## Step 2: Create Plots for Multiple Countries Using a For Loop
+
+Now what if we want the same plot for a bunch of countries?
+
+Instead of copying the same code and changing the country name each time, write a loop to generate the same plot for multiple countries.
+
+Start by creating a vector of countries you want to plot. In our case we will use Argentina, Gabon, and India:
+
+```{r}
+country_list <- c("Argentina", "Gabon", "India")
+```
+
+Then, write a `for` loop to create the same plot for each country.
+
+*HINT: Use a function like `paste()` to ensure the title changes for each country.*
+
+```{r}
+# For loop to generate plots for multiple countries
+for (__________) {
+  plot <- __________
+    __________
+    __________
+    __________
+  
+  print(plot)
+}
+```
+
+*CHECK: You should see a plot for each country in your `country_list`.*
+
+# Functions
+
+In this section, you WILL write functions that help analyze the HIV dataset. We'll start with simple conditionals and build toward more complex functions that apply to our data.
+
+## A) Simple Conditional Check for Missing Data
+
+In this step, you will write a function that checks if there are any missing values in the HIV dataset. This function should take a data frame (`df`) as an argument and return a message indicating whether there are missing values or not.
+
+### Step 1: Define the Function
+
+Create a function named `check_missing()` that checks for missing values in a dataset. If missing values are present, the function should print **"There are missing values in the dataset."** If no missing values are found, it should print **"No missing values found."**
+
+*HINT: Use a conditional statement to write your function.*
+
+```{r}
+# Function that checks for NAs
+check_missing <- function(df) {
+  "WRITE_YOUR_CODE_HERE"
+}
+```
+
+### Step 2: Test the Function
+
+Test your function on the `hiv_full` and `hiv_full_pop_NA` datasets.
+
+```{r}
+# Test on `hiv_full`
+check_missing(hiv_full)
+
+# Test on `hiv_full_pop_NA`
+check_missing(hiv_full_pop_NA)
+```
+
+*CHECK: Your output should be "No missing values found." for the `hiv_full` and " There are missing values in the dataset." for `hiv_full_pop_NA`.*
+
+## B) Simple Function to Calculate Prevalence for Total Cases
+
+Next, you will write a simple function that calculates the **HIV prevalence rate** (total cases per 100,000 people) for each country and year. This function should take the long-format dataset as input, filter it to include only total cases, and return a dataset with a new column showing the prevalence rate.
+
+### Step 1: Define the Function
+
+Create a function named `calculate_prevalence()` that calculates the HIV prevalence rate for each country and year.
+
+*NOTE: Use the following mathematical equation to calculate the prevalence rate per 100,000 people:* $$
+\text{Prevalence Rate per 100,000} = \left( \frac{\text{Total Number of HIV Cases}}{\text{Total Population}} \right) \times 100,000
+$$ *HINT: Start by filtering for only `total_cases` and then calculating the prevalence rate*
+
+```{r}
+calculate_prevalence <- function(df) {
+  "WRITE_YOUR_CODE_HERE"
+}
+```
+
+### Step 2: Apply the Function
+
+Apply the function to the `hiv_long` dataset and view the first few rows.
+
+```{r}
+# Apply the function to the hiv_long dataset
+hiv_prevalence <- calculate_prevalence(hiv_long)
+
+# View the first few rows
+head(hiv_prevalence)
+```
+
+*CHECK: You should see a new column `prevalence_rate` added to your data frame. It should represent the number of total cases per 100,000 people.*
+
+## C) Including an Argument Check with Informative Error Message
+
+When creating functions, it is always useful to include informative error messages!
+
+Let's modify the `calculate_prevalence` function to include an argument check.
+
+### Step 1: Define the Function
+
+Modify the `calculate_prevalence()` by adding an error message. If the input `df` does not have the necessary columns (`country`, `year`, `cases`, `population`, and `type`), the function should throw an informative error message such as "The input data frame must contain 'country', 'year', 'cases', 'population', and 'type' columns.".
+
+*HINT: Use the `stop()` function to display an error message, and `colnames()` to check the column names of the data frame.*
+
+*NOTE: There are many ways to write this function, the scafolding is only one way to write this function. Feel free to write the function your own way.*
+
+```{r}
+calculate_prevalence <- function(df) {
+  # Argument check
+  if (!all(__________________ ______ colnames(df))) {
+    # Stop message
+    ___________________________
+  }
+  
+  # Calculate prevalence
+  _____________________________
+  _____________________________
+}
+```
+
+### Step 2: Test the Function
+
+Test the function with correct and incorrect inputs.
+
+```{r}
+# Test with `hiv_long`
+calculate_prevalence(hiv_long)  # Correct input
+
+# Test with `hiv_new_cases`
+calculate_prevalence(hiv_new_cases)  # Incorrect input, should give an error
+```
+
+*CHECK: The function should run without error when using `hiv_long` and should throw an informative error message when using `hiv_new_cases`.*
+
+## D) Adding an Optional Argument for Rounding
+
+Let's make the `calculate_prevalence` function more flexible by adding an optional `round` argument.
+
+### Step 1: Define the Function
+
+Further modify the `calculate_prevalence` function to include the argument `round`. If `round` is set to `TRUE`, the function should round the prevalence rate to the **nearest whole number**. If `round` is not specified or `FALSE`, the function should leave the values as they are.
+
+*HINT: Use the `round()` function and a conditional statement to determine whether to round the values.*
+
+```{r}
+calculate_prevalence <- function(df, round = FALSE) {
+  # Argument check
+  _____________________________
+  _____________________________
+  _____________________________
+  
+  # Calculate prevalence
+  _____________________________
+  _____________________________
+  _____________________________
+  
+  # Round values
+  if (round) {
+  _____________________________
+  _____________________________
+  }
+  
+  # Print/return dataframe
+  ______________
+  
+}
+```
+
+### Step 2: Test the Function
+
+Test the function with and without rounding.
+
+```{r}
+# Test the function with rounding
+calculate_prevalence(hiv_long, round = TRUE)
+
+# Test the function without rounding
+calculate_prevalence(hiv_long, round = FALSE)
+```
+
+*CHECK: When `round = TRUE`, the `prevalence_rate` values should be rounded to the nearest whole number. When `round = FALSE`, the values should be left as they are.*
+
+# CHALLENGE (Optional)
+
+## Introduction to Using Ellipses (`...`) in Internal Functions
+
+In R, the ellipsis (`...`) allows you to pass additional arguments to a function, which can then be passed on to another function inside. This is particularly useful when you want to create flexible functions that can accept and pass extra arguments to other functions they call internally.
+
+In this challenge, you'll create a function that calculates the country with the highest increase in total HIV cases over time. Then, you'll use the `cowsay` package to print a message with that result, using the ellipsis to customize the message.
+
+## Step 1: Install the `cowsay` Package
+
+First, install the `cowsay` package using `pacman` to ensure you have all necessary tools.
+
+```{r}
+pacman::p_load(cowsay)
+```
+
+## Step 2: Use `cowsay::say()` to Print Messages
+
+You can use `cowsay::say()` to print fun messages. Explore the function and try to understand how it works.
+
+Here’s a simple example on how to use this function:
+
+```{r}
+cowsay::say("Good luck on the challenge question!",
+            by = "cat",
+            what_color = "blue",
+            by_color = "orange")
+```
+
+## Step 3: Create a Function to Calculate the Highest Increase in Total Cases
+
+Next, you’ll create a function called `highest_increase` that calculates the country with the **highest increase in total cases** from the first year to the last year in the dataset. Then, use the `cowsay::say()` function to print out the result.
+
+*HINT: To calculate the highest increase, you’ll need to filter the dataset to include only `total_cases`, group the data by `country`, and then calculate the difference between the first and last years for each country.*
+
+```{r}
+highest_increase <- function(df, ...) {
+  # Calculate the increase in cases for each country
+  _____________________________
+  _____________________________
+  _____________________________
+  _____________________________
+  _____________________________
+  _____________________________
+  
+  # Use cowsay to print the result with additional arguments
+  _____________________________
+  _____________________________
+  _____________________________
+  
+}
+```
+
+## Step 4: Test the Function
+
+Finally, test your `highest_increase` function using the `hiv_long` dataset. Customize the output message by passing additional arguments to the `cowsay::say()` function.
+
+*HINT: When calling `highest_increase()`, you can customize the message by passing arguments like `by`, `what_color`, and `by_color` to `cowsay::say()` through the ellipsis (`...`).*
+
+```{r}
+# Use the function `highest_increase` with cowsay::say() arguments
+highest_increase("WRITE_YOUR_CODE_HERE")
+```
+
+*CHECK: You should see a message with the name of the country that had the highest increase in total cases, displayed in the style of your choice.*
