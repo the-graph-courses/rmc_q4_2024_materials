@@ -59,7 +59,8 @@ We can create both of these vectors using `list.files()` and `file_path_sans_ext
 ```{r}
 # Extract paths for all .csv files in the data folder
 hiv_data_paths <- list.files(here("data"),
-                             pattern = "*.csv")
+                             pattern = "*.csv",
+                             full.names = TRUE)
 
 # Inspect paths
 hiv_data_paths
@@ -71,7 +72,7 @@ hiv_data_paths
 
 ```{r}
 # Create vector of data frame names
-df_names <- file_path_sans_ext(hiv_data_paths)
+df_names <- file_path_sans_ext(basename(hiv_data_paths))
 
 df_names
 ```
